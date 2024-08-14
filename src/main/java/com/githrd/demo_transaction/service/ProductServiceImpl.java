@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.githrd.demo_transaction.dao.ProductInMapper;
 import com.githrd.demo_transaction.dao.ProductOutMapper;
@@ -70,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
 
 	// 출고
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int insert_out(ProductVo vo) throws Exception {
 		
 		int res = 0;
@@ -103,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
 
 	// 입고 취소
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int delete_in(int idx) throws Exception {
 		
 		int res = 0;
