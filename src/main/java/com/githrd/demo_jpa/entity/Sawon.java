@@ -42,7 +42,7 @@ public class Sawon {
 
     
     @OneToMany  // 1:n
-    @JoinColumn(name="godam", referencedColumnName = "sabun")
+    @JoinColumn(name="godam", referencedColumnName = "sabun")  //godam이 sabun을 참조
     List<Gogek> goList;
 
 }
