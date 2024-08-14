@@ -31,7 +31,7 @@ public class TestController {
     }
 
 
-    //login?name==홍길동&age=20&grade=normal(일반) or admin(관리자)
+    //login?name=홍길동&age=20&grade=normal(일반) or admin(관리자)
     @GetMapping("/login")
     @ResponseBody       // Map으로 세 가지 정보 받아오기
     public String login(@RequestParam Map<String, Object> user){   // 이렇게 쓰면 알아서 만들어줌 map을 따로 만들 필요가 없다?
@@ -69,7 +69,7 @@ public class TestController {
 
     // error 메세지
     // /error?reason=session_timeout
-    @GetMapping("/myerror")
+    @GetMapping("/myerror")     // 예약어 문제로 그냥 error로 이름 지을 시 오류남
     @ResponseBody
     public String myerror(String reason){
 
