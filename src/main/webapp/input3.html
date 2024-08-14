@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+<script>
+
+    function send(f){
+        let title = f.title.value.trim();
+        let count = f.photo.files.length;
+        // alert(f.photo.files.length);      // 사진 몇개 선택했는지
+  
+
+        if(title==""){
+            alert("제목을 입력하세요");
+            f.title.value = "";
+            f.title.focus();
+            return;
+        }
+
+        // 업로드 할 수 있는 사진 갯수 제한하기
+        if(count<1 || count>6){
+            alert("업로드 가능한 사진의 갯수는 1~6개입니다.");
+            return;
+        }
+
+        f.action="upload3.do";    // controller가서 만들기
+        f.submit();
+    }
+</script>
+
+
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        제목 : <input name="title"><br>
+        사진 : <input type="file" name="photo" multiple><br>    
+        <input type="button" value="전송" onclick="send(this.form);">
+    </form>
+</body>
+</html>
