@@ -1,5 +1,8 @@
 package com.githrd.demo_photo.vo;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("member")
 public class MemberVo {
 	
 	int 	mem_idx;

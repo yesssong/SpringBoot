@@ -1,5 +1,8 @@
 package com.githrd.demo_photo.vo;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("photo")
 public class PhotoVo {
 	int 	no;
 	int 	p_idx;

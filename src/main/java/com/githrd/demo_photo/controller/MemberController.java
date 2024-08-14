@@ -1,8 +1,9 @@
 package com.githrd.demo_photo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.githrd.demo_photo.dao.MemberMapper;
 import com.githrd.demo_photo.vo.MemberVo;
 
-import dao.MemberDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -30,20 +31,15 @@ public class MemberController {
 	// 생성자 만들어 질 때 dao injection(주입) 받겠다
 	// 처음에 한 번만 연결
 	@Autowired
-	MemberDao member_dao;		// context-3-dao 여기서 만들어짐(초기화)
-	
-	// 생성자 만들어지는 확인하기 위한 코드 굳이 만들 필요X
-	public MemberController() {
-		// TODO Auto-generated constructor stub
-		System.out.println("--- MemberController() ---");
-	}
+	MemberMapper member_mapper;		// context-3-dao 여기서 만들어짐(초기화)
+
 	
 	
 	// 회원 전체 목록
 	@RequestMapping("list.do")
 	public String list(Model model) {
 		//회원목록 가져오기
-		List<MemberVo> list = member_dao.selectList();		// dao에 selectList 추가
+		List<MemberVo> list = member_mapper.selectList();		// dao에 selectList 추가
 		
 		model.addAttribute("list", list);
 		
@@ -58,19 +54,23 @@ public class MemberController {
 	}
 
 	// 아이디 중복체크
-	@RequestMapping(value="check_id.do", produces="application/json; charset=utf-8;")
+	@RequestMapping(value="check_id.do")
 	@ResponseBody
-	public String check_id(String mem_id) {
+	public Map<String, Boolean> check_id(String mem_id) {
 		
 		// mem_id에 해당 되는 유저정보 검색
-		MemberVo vo = member_dao.selectOne(mem_id);
+		MemberVo vo = member_mapper.selectOneFromId(mem_id);
 		// vo에 없다면 중복되는 id가 없다는 뜻
 		boolean bResult = (vo==null);
 		
-		JSONObject json = new JSONObject();
-		json.put("result", bResult);
+		// json 객체 직접 사용X, Map 사용
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("result", bResult);		//{"result" : true}
+
+		//JSONObject json = new JSONObject();
+		//json.put("result", bResult);
 		
-		return json.toString();
+		return map;
 	}
 	
 	// 회원가입하기
@@ -83,7 +83,7 @@ public class MemberController {
 		vo.setMem_ip(mem_ip);
 		
 		// 회원가입 정보 DB에 넣기
-		int res = member_dao.insert(vo);		// dao에 insert 추가
+		int res = member_mapper.insert(vo);		// dao에 insert 추가
 		
 		return "redirect:login_form.do";   // 회원 가입 후 로그인창으로 이동
 	}
@@ -102,7 +102,7 @@ public class MemberController {
 	@RequestMapping("login.do")						// redirect할 때 넘어가는 정보들을 DS
 	public String login(String mem_id, String mem_pwd,RedirectAttributes ra) {
 		
-		MemberVo user = member_dao.selectOne(mem_id);
+		MemberVo user = member_mapper.selectOneFromId(mem_id);
 		
 		// id 틀렸을 경우
 		if(user==null) {
@@ -152,7 +152,7 @@ public class MemberController {
 			return "redirect:list.do";
 		}
 		// 3. DB delete : delete from member where mem_idx
-		int res = member_dao.delete(mem_idx);		// Dao가서 delete 메소드 만들기
+		int res = member_mapper.delete(mem_idx);		// Dao가서 delete 메소드 만들기
 	
 		return "redirect:list.do";		// 삭제 후 메인화면으로 이동
 	}
@@ -162,7 +162,7 @@ public class MemberController {
 	@RequestMapping("modify_form.do")
 	public String modify_form(int mem_idx, Model model) {
 		
-		MemberVo vo = member_dao.selectOne(mem_idx);
+		MemberVo vo = member_mapper.selectOneFromIdx(mem_idx);
 		
 		model.addAttribute("vo", vo);
 		
@@ -178,7 +178,7 @@ public class MemberController {
 		vo.setMem_ip(mem_ip);
 		
 		// DB에 수정 값 넣기
-		int res = member_dao.update(vo);
+		int res = member_mapper.update(vo);
 		
 		MemberVo loginUser = (MemberVo) session.getAttribute("user");
 		
@@ -186,7 +186,7 @@ public class MemberController {
 		if(loginUser.getMem_idx()==vo.getMem_idx()) {
 
 			// 로그인 상태 정보
-			MemberVo user = member_dao.selectOne(vo.getMem_idx());
+			MemberVo user = member_mapper.selectOneFromIdx(vo.getMem_idx());
 			
 			// session.removeAttribute("user"); -> 삭제
 			// scope내에 저장 방식 Map 형식 key/value
