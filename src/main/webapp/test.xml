@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<persons>
+   <person>
+      <name>길동1</name>
+      <age>21</age>
+   </person>
+   <person>
+      <name>길동2</name>
+      <age>22</age>
+   </person>
+   <person>
+      <name>길동3</name>
+      <age>23</age>
+   </person>
+</persons>

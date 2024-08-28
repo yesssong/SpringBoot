@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<!-- Bootstrap 3.x -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+<style type="text/css">
+  #box{
+     width: 1000px;
+     margin: auto;
+     margin-top: 50px;
+  }
+</style>
+
+<script type="text/javascript">
+
+  function find_product(){
+	  
+	  let p_name	= $("#p_name").val().trim();
+	  let page		= parseInt($("#page").val());
+	  let display	= parseInt($("#display").val());
+	  
+	  if(p_name==''){
+		  alert("조회할 상품명을 입력하세요!");
+		  $("#p_name").val("");
+		  $("#p_name").focus();
+		  return;
+	  }
+	  
+	  //검색
+	  let start = (page-1) * display + 1;
+	  
+	  //Ajax통해서 요청
+	  $.ajax({
+		  url		:	"product/list.do",
+		  data		:	{"p_name" : p_name, "start": start, "display": display },
+          success	:	function(res_data){
+        	  
+        	  $("#disp").html(res_data);
+        	  
+          },
+          error		:	function(err){
+        	  alert(err.responseText);
+          }
+		  
+	  });
+	  
+	  
+	  
+  }
+
+
+</script>
+
+
+
+</head>
+<body>
+
+<div  id="box">
+	
+	<!-- 검색창  -->
+	<div>
+		<form class="form-inline">
+		   <label>상품명:</label>
+		   <input class="form-control" id="p_name">
+		   <input class="btn btn-primary" type="button"  value="검색" onclick="find_product();">
+		   
+		   
+		   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		   
+		   <!-- 페이지 -->
+		   <label>페이지:</label>
+		   <select class="form-control" id="page">
+		       <option value="1">1 page</option>
+		       <option value="2">2 page</option>
+		       <option value="3">3 page</option>
+		       <option value="4">4 page</option>
+		       <option value="5">5 page</option>
+		       <option value="6">6 page</option>
+		       <option value="7">7 page</option>
+		       <option value="8">8 page</option>
+		       <option value="9">9 page</option>
+		       <option value="10">10 page</option>
+		   </select>
+		   
+		   
+		   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		   
+		   <!-- 화면에 보여지는 데이터 갯수 -->
+		   <label>화면당 데이터갯수:</label>
+		   <select class="form-control" id="display">
+		       <option value="10">10개씩보기</option>
+		       <option value="20">20개씩보기</option>
+		       <option value="30">30개씩보기</option>
+		       <option value="50">50개씩보기</option>
+		       <option value="100">100개씩보기</option>
+		   </select>
+		   
+		</form>
+	</div>
+	
+	<hr>
+	
+	<div id="disp"></div>
+
+
+</div>
+
+
+</body>
+</html>

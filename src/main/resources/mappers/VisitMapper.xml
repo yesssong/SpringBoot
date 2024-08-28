@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo_visit.dao.VisitMapper">
+
+  
+	
+	<!-- 조건별 검색  : Dynamic Query -->
+	<select id="selectList"  parameterType="Map"  resultType="visit">
+	    select * from visit
+	    <trim prefix="where"  prefixOverrides="or">
+	       
+	       <if test="name!=null">
+	           name like concat('%', #{ name } ,'%')
+	       </if>
+	        
+	       <if test="content!=null">
+	           or content like concat('%', #{ content } ,'%')
+	       </if>
+	       
+	       <if test="regdate!=null">
+	           DATE_FORMAT(regdate,'%Y-%m-%d') = #{ regdate }
+	       </if>
+	       
+	    </trim>
+	    order by idx desc
+	</select>
+
+     <!--게시물 갯수  -->
+	<select id="selectRowTotal"  parameterType="Map"  resultType="int">
+	    select ifnull(count(*),0) from visit
+	    <trim prefix="where"  prefixOverrides="or">
+	       
+	       <if test="name!=null">
+	           name like concat('%', #{ name } ,'%')
+	       </if>
+	        
+	       <if test="content!=null">
+	           or content like concat('%', #{ content } ,'%')
+	       </if>
+	       
+	       <if test="regdate!=null">
+	           DATE_FORMAT(regdate,'%Y-%m-%d') = #{ regdate }
+	       </if>
+	       
+	    </trim>
+	</select>
+
+	<!-- 조건별 검색  : Dynamic Query -->
+	<select id="selectListCount"  parameterType="Map"  resultType="visit">
+	    select * from visit
+	    <trim prefix="where"  prefixOverrides="or">
+	       
+	       <if test="name!=null">
+	           name like concat('%', #{ name } ,'%')
+	       </if>
+	        
+	       <if test="content!=null">
+	           or content like concat('%', #{ content } ,'%')
+	       </if>
+	       
+	       <if test="regdate!=null">
+	           DATE_FORMAT(regdate,'%Y-%m-%d') = #{ regdate }
+	       </if>
+	       
+	    </trim>
+	    order by idx desc
+		limit #{ count }
+	</select>
+	
+
+	<!-- 전체조회 -->
+	<select id="selectListAll" resultType="visit">
+	   select * from visit order by idx desc
+	</select>
+	
+	<!-- 게시물 1건 조회 -->
+	<select id="selectOne" parameterType="int"  resultType="visit">
+	   select * from visit where idx = #{ idx }
+	</select>
+  
+    <!-- 글쓰기 -->
+    <insert id="insert"  parameterType="visit">
+       insert into visit(name,content,pwd,ip,regdate) 
+                   values(#{ name } ,#{ content } , #{ pwd } ,#{ ip } , now())
+    </insert>
+    
+    <!-- 글삭제 -->
+    <delete id="delete" parameterType="int">
+       delete from visit where idx = #{ idx }
+    </delete>
+    
+    <!-- 글수정 -->
+    <update id="update" parameterType="visit">
+    
+       update visit set name=#{ name },
+                        content=#{ content },
+                        pwd=#{ pwd },
+                        ip=#{ ip }, 
+                        regdate=now() 
+       where idx=#{ idx } 
+       
+    </update>
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
